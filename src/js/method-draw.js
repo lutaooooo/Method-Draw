@@ -594,7 +594,7 @@ window.methodDraw = function() {
         var panels = {
           g: [],
           a: [],
-          rect: ['rx','width','height', 'x', 'y', 'id'],
+          rect: ['rx','width','height', 'x', 'y'],
           image: ['width','height', 'x', 'y'],
           circle: ['cx','cy','r'],
           ellipse: ['cx','cy','rx','ry'],
@@ -624,6 +624,7 @@ window.methodDraw = function() {
           if(el_name === "rect"){
             $("#cornerRadiusLabel").show();
             $("#rect_id").val(elem.id);
+            $("#rect_id").parent().toggle(!multiselected);
           }
           else {
             $("#cornerRadiusLabel").show()
@@ -747,7 +748,11 @@ window.methodDraw = function() {
     }
     
     var changeId = function(e) {
+      const elem = svgCanvas.getSelectedElems()[0];
+      svgCanvas.selectorManager.releaseSelector(elem);
       svgCanvas.changeSelectedAttribute("id", this.value);
+      const sel = svgCanvas.selectorManager.requestSelector(elem);
+      sel.showGrips(true);
     }
 
     var changeRotationAngle = function(ctl) {
