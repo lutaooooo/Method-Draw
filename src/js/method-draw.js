@@ -594,7 +594,7 @@ window.methodDraw = function() {
         var panels = {
           g: [],
           a: [],
-          rect: ['rx','width','height', 'x', 'y'],
+          rect: ['rx','width','height', 'x', 'y', 'id'],
           image: ['width','height', 'x', 'y'],
           circle: ['cx','cy','r'],
           ellipse: ['cx','cy','rx','ry'],
@@ -621,8 +621,13 @@ window.methodDraw = function() {
           // corner radius has to live in a different panel
           // because otherwise it changes the position of the 
           // of the elements
-          if(el_name == "rect") $("#cornerRadiusLabel").show()
-          else $("#cornerRadiusLabel").hide()
+          if(el_name === "rect"){
+            $("#cornerRadiusLabel").show();
+            $("#rect_id").val(elem.id);
+          }
+          else {
+            $("#cornerRadiusLabel").show()
+          }
           
           $.each(cur_panel, function(i, item) {
             var attrVal = elem.getAttribute(item);
@@ -639,7 +644,7 @@ window.methodDraw = function() {
             }
           });
           
-          if(el_name == 'text') {
+          if(el_name === 'text') {
             var font_family = elem.getAttribute("font-family");
             var cleanFontFamily = font_family.split(",")[0].replace(/'/g, "");
             var select = document.getElementById("font_family_dropdown");
@@ -654,7 +659,7 @@ window.methodDraw = function() {
             $('#text').val(elem.textContent);
             $('#preview_font').text(cleanFontFamily).css('font-family', font_family);
           } // text
-          else if(el_name == 'image') {
+          else if(el_name === 'image') {
             setImageURL(svgCanvas.getHref(elem));
           } // image
           else if(el_name === 'g' || el_name === 'use') {
@@ -741,6 +746,10 @@ window.methodDraw = function() {
       });
     }
     
+    var changeId = function(e) {
+      svgCanvas.changeSelectedAttribute("id", this.value);
+    }
+
     var changeRotationAngle = function(ctl) {
       var preventUndo = true;
       svgCanvas.setRotationAngle(ctl.value, preventUndo);
@@ -2248,8 +2257,9 @@ window.methodDraw = function() {
     $('#path_y')       .dragInput({ min: null, max: null,  step:  1,  callback: changeAttribute,     cursor: false                         });
     $('#rect_x')       .dragInput({ min: null, max: null,  step:  1,  callback: changeAttribute,     cursor: false                         });
     $('#rect_y')       .dragInput({ min: null, max: null,  step:  1,  callback: changeAttribute,     cursor: false                         });
-    $('#g_x')      .dragInput({ min: null, max: null,  step:  1,  callback: changeAttribute,     cursor: false                         });
-    $('#g_y')      .dragInput({ min: null, max: null,  step:  1,  callback: changeAttribute,     cursor: false                         });
+    $('#rect_id')      .on("change", changeId).on("keydown", function(e){ if (e.key === "Enter") this.blur()});
+    $('#g_x')          .dragInput({ min: null, max: null,  step:  1,  callback: changeAttribute,     cursor: false                         });
+    $('#g_y')          .dragInput({ min: null, max: null,  step:  1,  callback: changeAttribute,     cursor: false                         });
     $('#image_x')      .dragInput({ min: null, max: null,  step:  1,  callback: changeAttribute,     cursor: false                         });
     $('#text_y')       .dragInput({ min: null, max: null,  step:  1,  callback: changeAttribute,     cursor: false                         });
     $('#text_x')       .dragInput({ min: null, max: null,  step:  1,  callback: changeAttribute,     cursor: false                         });
